@@ -18,7 +18,7 @@ The detailed explantion of the code is at the top of each Matlab script file. Be
   * std_smth.m -- standard RTS smoother (used for EM on B for awake & unconscious periods separately)
   * kf_em_B.m -- EM on B matrices without switching components
  
- * plotting
+* plotting
   * plt_B_single.m -- plot the estimated B matrices for the single rhythm model
   * plt_B_multi.m -- plot the estimated B matrices for the multiple rhythms model
   * plt_dosage_bhvr_SW.m -- plot the propofol dosage, behavioral responses, estimated switching states
