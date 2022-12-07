@@ -1,6 +1,6 @@
 # Common Oscillator Models
 
-Code repository for all of the methods described and the analysis performed in *Switching Functional Network Models of Oscillatory Brain Dynamics*.
+Code repository for all of the methods described and the analysis performed in Switching Functional Network Models of Oscillatory Brain Dynamics, *The 56th Asilomar Conference on Signals, Systems & Computer, IEEE*, 2022.
 
 The detailed explantion of the code is at the top of each Matlab script file. Below is a brief description of all scripts in this repo.
 
