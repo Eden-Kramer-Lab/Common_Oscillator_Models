@@ -23,5 +23,5 @@ The detailed explantion of the code is at the top of each Matlab script file. Be
   * plt_B_multi.m -- plot the estimated B matrices for the multiple rhythms model
   * plt_dosage_bhvr_SW.m -- plot the propofol dosage, behavioral responses, estimated switching states
   * helper_functions 
-   * plt_funcs.m -- create the layout of the electrodes
-   * adjust_sw.m -- adjust the estimated switching states for removed segments
+    * plt_funcs.m -- create the layout of the electrodes
+    * adjust_sw.m -- adjust the estimated switching states for removed segments
