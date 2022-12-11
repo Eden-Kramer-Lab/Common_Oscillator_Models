@@ -98,7 +98,7 @@ iter = 15;
 tol = 1e-5;
 
 % run the EM algorithm
-[mle_B,X_RTS,SW,Q_func] = sw_em_B(y',tol,iter,A,B0,Q,R,Z,X_0);
+[mle_B,X_RTS,SW,Q_func] = em_B(y',tol,iter,A,B0,Q,R,Z,X_0);
 
 
 %% Save results
