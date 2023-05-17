@@ -428,7 +428,6 @@ def em_B(
     SW[:, :, 0] = M_j
 
     for itr in range(max_iter):
-
         # E-step
         for j in range(n_discrete_states):
             A_j = A[:, :, j]

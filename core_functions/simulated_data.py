@@ -1,5 +1,6 @@
 import numpy as np
 import scipy
+from .core import em_B
 
 
 def skf_input_data():
@@ -23,7 +24,6 @@ def skf_input_data():
 
 
 def create_simulated_data():
-
     osc_freq = np.asarray([100, 200])
     fs = 100
 
