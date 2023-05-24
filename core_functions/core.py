@@ -496,3 +496,49 @@ def em_B(
     mle_B = Bj[:, :, :, 1:]
 
     return mle_B, X_RTS, SW, Q_func
+
+import numpy as np
+
+def get_theoretical_psd(f_y, Fs, freq_tot, ampl_tot_k, nois_tot_k):
+    """
+    Returns theoretical/parametric power spectral density (PSD) for a signal generated with Matsuda's et al. (2017) model.
+    Based on Hugo Soulat's https://github.com/mh105/SSP/ssp_decomp/get_theoretical_psd.m
+
+    Args:
+        f_y (array-like): Frequencies at which PSD is calculated.
+        Fs (float): Sampling frequency.
+        freq_tot (array-like): Peak frequencies of the oscillators.
+        ampl_tot_k (array-like): Amplitudes of the oscillators.
+        nois_tot_k (array-like): State noise covariance.
+
+    Returns:
+        H_tot (array): Total PSD.
+        H_i (array): PSD of a given oscillation at each frequency in freq_tot.
+
+    """
+
+    Nfreq = len(freq_tot)
+
+    # Solve small issue when f_i = Fs / 4 -> w = pi/2
+    for ww_i in range(len(freq_tot)):
+        if freq_tot[ww_i] == Fs / 4:
+            freq_tot[ww_i] = freq_tot[ww_i] + freq_tot[ww_i] * 0.002
+
+    z = np.exp(2j * np.pi * f_y / Fs)
+    w_tot = freq_tot * 2 * np.pi / Fs
+
+    nois2 = nois_tot_k
+
+    A_i = (1 - 2 * ampl_tot_k ** 2 * np.cos(w_tot) ** 2 + ampl_tot_k ** 4 * np.cos(2 * w_tot)) / (
+            ampl_tot_k * (ampl_tot_k ** 2 - 1) * np.cos(w_tot))
+    B_i = 0.5 * (A_i - 2 * ampl_tot_k * np.cos(w_tot) + np.sqrt((A_i - 2 * ampl_tot_k * np.cos(w_tot)) ** 2 - 4))
+    V_i = -(nois2 * ampl_tot_k * np.cos(w_tot)) / B_i
+
+    H_i = np.zeros((Nfreq, len(z)))
+    for ii in range(Nfreq):
+        H_i[ii, :] = (V_i[ii] / Fs) * np.abs(1 + B_i[ii] * z) ** 2 / np.abs(
+            1 - 2 * ampl_tot_k[ii] * np.cos(w_tot[ii]) * z + ampl_tot_k[ii] ** 2 * z ** 2) ** 2
+
+    H_tot = np.sum(H_i, axis=0)
+
+    return H_tot, H_i
