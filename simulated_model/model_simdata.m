@@ -29,12 +29,6 @@ k = 2;          % specify the number of oscillators
 M = 3;          % specify the number of switching states
 x_dim = 2*k;
 
-% compute var of y on each channel
-var_y = zeros(n,1);
-for i =1:n
-    var_y(i) = cov(y(i,:));
-end
-
 % parameters set up
 A = zeros(2*k,2*k,M);
 Q = zeros(2*k,2*k,M);   %sigma matrix
@@ -45,7 +39,7 @@ rho = .9;          % auto-regressive parameter
 osc_freq = 7;      % specify the oscillation frequency
 
 % scale of the var
-vq = 0.1;
+vq = 1;
 vr = 1;
 
 theta1 = (2*pi*osc_freq(1))*(1/fs);
