@@ -10,6 +10,7 @@ dependencies:
   - scipy
   - statsmodels
   - jupyterlab
+  - nodejs
   - ipympl
   - ipykernel
   - nbconvert
