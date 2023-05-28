@@ -466,7 +466,7 @@ def em_B(
 
     mle_B = Bj[:, :, :, 1:]
 
-    return mle_B, X_RTS, SW, Q_func
+    return mle_B, X_RTS, SW, Q_func, itr
 
 
 def get_theoretical_psd_oscillators(f_y, Fs, freq_tot, ampl_tot_k, nois_tot_k):
