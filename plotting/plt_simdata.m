@@ -26,27 +26,38 @@ params = struct('Fs',fs,'tapers',[3000, 20]);
 
 nf = length(f);
 Stheo = zeros(nf, n, M); % freqs x electrodes x states
+Stheo_fit = zeros(nf, n, M); % freqs x electrodes x states
 for i = 1:n % iterate over electrodes
     for m = 1:M
-        obsvec = mle_B(i,:,m,end);
+        obsvec = Btrue(i,:,m);
+        obsvec_fit = mle_B(i,:,m,end);
         for j = 1:2:x_dim % Iterate over pairs of state vars
             % sum squared real and imaginary weights, multiply by theo spectrum for that oscillator
             Stheo(:,i,m) = Stheo(:,i,m) + sum(obsvec(j:j+1).^2) .* H_i(floor(j/2)+1,:)';
+            Stheo_fit(:,i,m) = Stheo_fit(:,i,m) + sum(obsvec_fit(j:j+1).^2) .* H_i(floor(j/2)+1,:)';
         end
     end
 end
 
 % Add observation noise
 Stheo = Stheo + vr/fs;
+Stheo_fit = Stheo_fit + vr/fs;
 
 S_weights = zeros(1,1,M);
 for i = 1:M
-    S_weights(i) = mean(SW(:,i,end));
+    S_weights(i) = mean(Strue==i);
 end
 
-Stheo_combined = squeeze(sum(bsxfun(@times, Stheo, S_weights), 3));
+S_weights_fit = zeros(1,1,M);
+for i = 1:M
+    S_weights_fit(i) = mean(SW(:,i,end));
+end
 
-%%
+
+Stheo_combined = squeeze(sum(bsxfun(@times, Stheo, S_weights), 3));
+Stheo_combined_fit = squeeze(sum(bsxfun(@times, Stheo_fit, S_weights_fit), 3));
+
+%%x
 fig = figure;
 axs = gobjects(1, n);
 for i = 1:n
@@ -54,6 +65,7 @@ for i = 1:n
     plot(f, 10*log10(squeeze(S(:,i))), 'DisplayName', 'Sim data');
     hold on;
     plot(f, 10*log10(Stheo_combined(:,i)), 'DisplayName', 'Theoretical');
+    plot(f, 10*log10(Stheo_combined_fit(:,i)), 'DisplayName', 'Theoretical (fitted)');
     hold off;
     title(sprintf('Electrode #%d', i));
     ylabel('Power (dB)');

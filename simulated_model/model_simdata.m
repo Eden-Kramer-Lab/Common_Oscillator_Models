@@ -52,15 +52,27 @@ for i=1:M
     R(:,:,i) = vr*eye(n); 
 end
 
-% initial B
-B0 = .1*rand(n,x_dim,M);    % everything is randomly weakly correlated
+ta = (1:T)/fs;              %time axis
+Strue = ones(T,1);
+Strue(ta>80)=2;
+Strue(ta>200)=3;
+
+Btrue = zeros(n, x_dim, M);
+Btrue(:, :, 1) = [0.4, 0, 0, 0; 0, 0, 0.4, 0; 0, 0, 0, 0; 0, 0, 0, 0];
+Btrue(:, :, 2) = [0.3, 0, 0, 0; 0, 0.3, 0, 0; 0, 0, 0.25, 0; 0, 0, 0, -0.25];
+Btrue(:, :, 3) = [0.5, 0, 0, 0; -0.5, 0, 0, 0; 0.5, 0, 0, 0; 0, 0, 0.4, 0];
+
+% (Testing)
+% B0 = Btrue;
+% X_0 = 0.1*ones(2*k,1); 
 
 % initial values
+B0 = .1*rand(n,x_dim,M);    % everything is randomly weakly correlated
 X_0 = mvnrnd(zeros(2*k,1), eye(2*k))'; 
-Z = 1e-3*ones(M)+(1-2e-3)*eye(M);
+Z = 1e-3*ones(M)+(1-3e-3)*eye(M);
 
 % EM set up
-iter = 15;
+iter = 10;
 tol = 1e-5;
 
 % run the EM algorithm

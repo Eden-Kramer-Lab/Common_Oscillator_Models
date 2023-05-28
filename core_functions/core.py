@@ -376,7 +376,7 @@ def em_B(
     )  # initial prob of the switching state
 
     # parameters set up
-    Bj = np.zeros((n_obs_dims, n_cont_states, n_discrete_states, max_iter))
+    Bj = np.zeros((n_obs_dims, n_cont_states, n_discrete_states, max_iter+1))
     # set up initial B
     Bj[:, :, :, 0] = B
 
@@ -448,7 +448,7 @@ def em_B(
             B2sum[:, :, j] = np.sum(B2[:, :, j, :], axis=2)
 
             Bj[:, :, j, itr + 1] = (
-                np.linalg.inv(B2sum[:, :, j]) @ B1sum[:, :, j]
+                B1sum[:, :, j] @ np.linalg.inv(B2sum[:, :, j])
             )  # analytic sol
 
         if np.all(abs(Bj[:, :, 1, itr + 1] - Bj[:, :, 1, itr]) < tol):
@@ -563,9 +563,10 @@ def get_theoretical_psd_COM(faxis, fs, osc_freqs, rhos, var_state_nois, var_obs_
 
     # Weighted average over states
     if len(s.shape)==2:
-        S_weights = np.mean(s,axis=1)
+        assert(np.all(s.shape[1]==M)) # T x M matrix of indicators
+        S_weights = np.mean(s,axis=0)
     else:
-        assert(len(s.shape)==1)
+        assert(len(s.shape)==1) # vector of state indices
         S_weights = np.array([np.mean(s==i) for i in range(M)])
     Stheo = Stheo_per_state@S_weights
 
