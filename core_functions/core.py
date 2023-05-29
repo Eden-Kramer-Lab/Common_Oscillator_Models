@@ -571,3 +571,36 @@ def get_theoretical_psd_COM(faxis, fs, osc_freqs, rhos, var_state_nois, var_obs_
     Stheo = Stheo_per_state@S_weights
 
     return Stheo, Stheo_per_state
+
+
+def B_mag_phase(B):
+    n = B.shape[0]
+    k = B.shape[1] // 2
+    M = B.shape[2]
+
+    mag = np.zeros((n, k, M))
+    phase = np.zeros((n, n, k, M))
+
+    for m in range(M):
+        # magnitude
+        for i in range(n):  # node
+            for j in range(k):  # oscillator
+                mag[i, j, m] = np.linalg.norm([B[i, j * 2 - 1, m], B[i, j * 2, m]])
+
+        # phases
+        for g in range(k):
+            for i in range(n):
+                for j in range(n):
+                    v1 = [B[i, g * 2 - 1, m], B[i, g * 2, m]]
+                    v2 = [B[j, g * 2 - 1, m], B[j, g * 2, m]]
+                    if mag[i, g, m] > 0.15 and mag[j, g, m] > 0.15:
+                        if np.arctan2(v1[0], v1[1]) - np.arctan2(v2[0], v2[1]) > 0:
+                            phase[i, j, g, m] = np.mod(
+                                np.arctan2(v1[0], v1[1]) - np.arctan2(v2[0], v2[1]), np.pi
+                            )
+                        else:
+                            phase[i, j, g, m] = np.mod(
+                                np.arctan2(v2[0], v2[1]) - np.arctan2(v1[0], v1[1]), -np.pi
+                            )
+
+    return mag, phase
