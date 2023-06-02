@@ -451,7 +451,7 @@ def em_B(
                 B1sum[:, :, j] @ np.linalg.inv(B2sum[:, :, j])
             )  # analytic sol
 
-        if np.all(abs(Bj[:, :, 1, itr + 1] - Bj[:, :, 1, itr]) < tol):
+        if np.all(abs(Bj[:, :, :, itr + 1] - Bj[:, :, :, itr]) < tol):
             break
 
         W_j, X_j, V_j, KT = skf(y, A, Bj[:, :, :, itr + 1], Q, R, X_0, Z, pi0)
